@@ -30,10 +30,11 @@
 // server.listen(3000, 'localhost', () => {
 //     console.log('listening for request on port 3000')
 // })
-
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = parseInt(process.env.port) || 4000;
+const {genSalt, hash, compare} = require('bcrypt');
+const port = parseInt(process.env.PORT) || 3000;
 
 
 let courses = [{
@@ -64,3 +65,16 @@ app.get('/courses/:id', (req, res)=> {
         res.send('Course was not found');
     }
 });
+
+//Encdrypt
+
+async function generatePass(password) {
+    const generateSalt = await genSalt();
+    const encPass = await hash(password, generateSalt);
+    const isValid = await compare(password, encPass);
+    console.log(generateSalt);
+    console.log(encPass);
+    console.log('Is correct? ', isValid);
+}
+// Call a function
+generatePass('jt2345');
